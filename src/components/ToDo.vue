@@ -32,7 +32,7 @@ const removeItem = id => {
 <template>
   <div class="h-screen w-screen flex justify-center md:items-center">
     <div
-      class="md:h-2/3 md:w-1/3 w-full flex flex-col gap-6 rounded-xl bg-gray-200 bg-opacity-90 shadow-lg"
+      class="md:h-2/3 md:w-1/3 w-full flex flex-col gap-6 rounded-xl bg-opacity-90"
     >
       <div class="flex justify-center w-full">
         <p class="md:text-4xl text-2xl font-bold mt-4 font-EDU text-gray-700">
@@ -40,10 +40,7 @@ const removeItem = id => {
         </p>
       </div>
 
-      <form
-        class="h-3/4 w-full overflow-y-auto no-scrollbar"
-        @submit.prevent="submitform"
-      >
+      <div class="h-full w-full overflow-y-auto no-scrollbar pb-4">
         <div class="flex flex-wrap items-center justify-center mx-2">
           <input
             type="text"
@@ -51,6 +48,7 @@ const removeItem = id => {
             class="p-2 rounded-md outline-none h-14"
             style="width: 250px"
             v-model="newItem"
+            @keypress.enter="addItem"
           />
 
           <!-- Save button calls addItem -->
@@ -74,29 +72,43 @@ const removeItem = id => {
         </div>
 
         <!-- unordered list to display ToDo items -->
-        <div class="flex flex-col items-center font-mono mt-3">
-          <ul class="">
-            <li
-              class="flex justify-between bg-customZinc p-2 rounded-lg my-2"
-              style="width: 300px"
-              v-for="item in items"
-              :key="item.id"
-              :class="
-                item.isChecked ? 'text-opacity-100 line-through font-mono' : ''
-              "
-            >
-              {{ item.label }}
-              <div>
-                <input type="checkbox" class="mx-2" v-model="item.isChecked" />
-                <button @click="removeItem(item.id)">
-                  <!-- delete button component -->
-                  <DeleteButton />
-                </button>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </form>
+        <Transition name="switch" mode="out-in">
+          <div
+            class="flex flex-col items-center font-sans mt-3"
+            v-if="items.length"
+          >
+            <transition-group name="list" tag="ul" appear>
+              <li
+                class="flex justify-between bg-gray-50 p-2 rounded-lg my-2 shadow-sm"
+                style="width: 300px"
+                v-for="item in items"
+                :key="item.id"
+                :class="
+                  item.isChecked
+                    ? 'text-opacity-100 line-through font-mono'
+                    : ''
+                "
+              >
+                {{ item.label }}
+                <div>
+                  <input
+                    type="checkbox"
+                    class="mx-2"
+                    v-model="item.isChecked"
+                  />
+                  <button @click="removeItem(item.id)">
+                    <!-- delete button component -->
+                    <DeleteButton />
+                  </button>
+                </div>
+              </li>
+            </transition-group>
+          </div>
+          <div v-else class="text-center p-4 text-gray-500">
+            Woohoo, nothing left todo!
+          </div>
+        </Transition>
+      </div>
     </div>
   </div>
 </template>
@@ -104,5 +116,35 @@ const removeItem = id => {
 <style>
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Safari, and WebKit browsers */
+}
+/* List transition classes */
+
+ul {
+  position: relative;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.list-move {
+  transition: all 0.3s ease;
+  position: absolute;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.4s ease;
+}
+/* switch transitions */
+.switch-enter-from,
+.switch-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.switch-enter-active,
+.switch-leave-active {
+  transition: all 0.4s ease;
 }
 </style>
