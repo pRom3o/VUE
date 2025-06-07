@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "caniuse-lite": "^1.0.30001721",
     "tailwindcss": "^3.4.14",
     "vue": "^3.5.12"
   },

@@ -1,11 +1,25 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import DeleteButton from './DeleteButton.vue';
+
 // import EditButton from './EditButton.vue';
 
 const newItem = ref(''); // Input binding
-const items = ref([]); // Array to hold the todo items
+const todoList = ref([]); // Array to hold the todo items
+watch(
+  todoList,
+  newValue => {
+    localStorage.setItem('todoList', JSON.stringify(newValue));
+  },
+  { deep: true }, // important since todoList is an array of objects
+);
+onMounted(() => {
+  const stored = localStorage.getItem('todoList');
+  if (stored) {
+    todoList.value = JSON.parse(stored) || [];
+  }
+});
 
 // Function to add an item to the list
 const addItem = () => {
@@ -13,19 +27,22 @@ const addItem = () => {
     const id = Date.now(); // Unique key based on timestamp
     const label = newItem.value; //new item value
     const isChecked = false;
-    items.value.push({ id, label, isChecked }); // Add new item with id and label to the list
+    todoList.value.push({ id, label, isChecked }); // Add new item with id and label to the list
+    localStorage.setItem('todoList', JSON.stringify(todoList.value));
+    console.log(todoList.value);
     newItem.value = ''; // Reset input to empty string
   }
 };
 
 // Function to remove all items from the list
 const clearList = () => {
-  items.value = [];
+  localStorage.removeItem('todoList');
+  todoList.value = [];
 };
 
 // Function to remove individual item from list
 const removeItem = id => {
-  items.value = items.value.filter(items => items.id !== id);
+  todoList.value = todoList.value.filter(items => items.id !== id);
 };
 </script>
 
@@ -65,7 +82,7 @@ const removeItem = id => {
             type="button"
             @click.prevent="clearList()"
             class="p-2 rounded-md bg-red-400 m-2 text-white"
-            v-if="items && items.length > 0"
+            v-if="todoList && todoList.length > 0"
           >
             Clear list
           </button>
@@ -75,13 +92,13 @@ const removeItem = id => {
         <Transition name="switch" mode="out-in">
           <div
             class="flex flex-col items-center font-sans mt-3"
-            v-if="items.length"
+            v-if="todoList.length > 0"
           >
             <transition-group name="list" tag="ul" appear>
               <li
                 class="flex justify-between bg-gray-50 p-2 rounded-lg my-2 shadow-sm"
                 style="width: 300px"
-                v-for="item in items"
+                v-for="item in todoList"
                 :key="item.id"
                 :class="
                   item.isChecked
