@@ -96,7 +96,7 @@ const removeItem = id => {
           >
             <transition-group name="list" tag="ul" appear>
               <li
-                class="flex justify-between bg-gray-50 p-2 rounded-lg my-2 shadow-sm"
+                class="flex justify-between bg-gray-100 p-2 rounded-lg my-2 shadow-sm"
                 style="width: 300px"
                 v-for="item in todoList"
                 :key="item.id"
@@ -113,7 +113,10 @@ const removeItem = id => {
                     class="mx-2"
                     v-model="item.isChecked"
                   />
-                  <button @click="removeItem(item.id)">
+                  <button
+                    @click="removeItem(item.id)"
+                    class="flex items-center"
+                  >
                     <!-- delete button component -->
                     <DeleteButton />
                   </button>

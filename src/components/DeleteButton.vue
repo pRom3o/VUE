@@ -1,6 +1,6 @@
 <!-- This icon is from <https://github.com/Templarian/MaterialDesign>, distributed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) license-->
 <template>
-  <p class="text-red-600">
+  <p class="text-red-600 flex items-center">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
