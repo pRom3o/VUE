@@ -49,7 +49,7 @@ const removeItem = id => {
 <template>
   <div class="h-screen w-screen flex justify-center md:items-center">
     <div
-      class="md:h-2/3 md:w-1/3 w-full flex flex-col gap-6 rounded-xl bg-opacity-90"
+      class="md:h-2/3 md:w-1/3 h-full w-full flex flex-col gap-6 rounded-xl bg-opacity-90"
     >
       <div class="flex justify-center w-full">
         <p class="md:text-4xl text-2xl font-bold mt-4 font-EDU text-gray-700">
@@ -58,12 +58,11 @@ const removeItem = id => {
       </div>
 
       <div class="h-full w-full overflow-y-auto no-scrollbar pb-4">
-        <div class="flex flex-wrap items-center justify-center mx-2">
+        <div class="flex flex-wrap items-center justify-center mt-4">
           <input
             type="text"
-            placeholder="add item to list"
-            class="p-2 rounded-md outline-none h-14"
-            style="width: 250px"
+            placeholder="click to add item to list"
+            class="p-2 rounded-md outline-none bg-inherit w-[200px] shadow-md"
             v-model="newItem"
             @keypress.enter="addItem"
           />
@@ -71,32 +70,22 @@ const removeItem = id => {
           <!-- Save button calls addItem -->
           <button
             @click.prevent="addItem()"
-            class="p-2 rounded-md bg-green-400 m-2 text-white"
+            class="px-3 py-2 text-sm rounded-md bg-green-400 m-2 text-white shadow-md"
             v-if="newItem && newItem.length > 0"
           >
             Save
-          </button>
-
-          <!-- Clear button calls removeItem -->
-          <button
-            type="button"
-            @click.prevent="clearList()"
-            class="p-2 rounded-md bg-red-400 m-2 text-white"
-            v-if="todoList && todoList.length > 0"
-          >
-            Clear list
           </button>
         </div>
 
         <!-- unordered list to display ToDo items -->
         <Transition name="switch" mode="out-in">
           <div
-            class="flex flex-col items-center font-sans mt-3"
+            class="h-full flex flex-col items-center font-sans mt-3"
             v-if="todoList.length > 0"
           >
             <transition-group name="list" tag="ul" appear>
               <li
-                class="flex justify-between bg-gray-100 p-2 rounded-lg my-2 shadow-sm"
+                class="flex justify-between bg-inherit p-2 rounded-lg my-2 shadow-md"
                 style="width: 300px"
                 v-for="item in todoList"
                 :key="item.id"
@@ -113,18 +102,31 @@ const removeItem = id => {
                     class="mx-2"
                     v-model="item.isChecked"
                   />
-                  <button
-                    @click="removeItem(item.id)"
-                    class="flex items-center"
-                  >
+                  <button @click="removeItem(item.id)" class="">
                     <!-- delete button component -->
                     <DeleteButton />
                   </button>
                 </div>
               </li>
+              <!-- Clear button calls removeItem -->
             </transition-group>
+            <div
+              class="flex items-center justify-center fixed bottom-0 w-[60%] md:w-[20%]"
+            >
+              <button
+                type="button"
+                @click.prevent="clearList()"
+                class="p-2 rounded-md bg-[#e66868] m-2 w-full text-white"
+                v-if="todoList && todoList.length > 0"
+              >
+                Clear list
+              </button>
+            </div>
           </div>
-          <div v-else class="text-center p-4 text-gray-500">
+          <div
+            v-else
+            class="h-[80%] flex items-center justify-center text-center p-4 text-gray-500"
+          >
             Woohoo, nothing left todo!
           </div>
         </Transition>
@@ -134,6 +136,10 @@ const removeItem = id => {
 </template>
 
 <style>
+::placeholder {
+  text-align: center;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Safari, and WebKit browsers */
 }
